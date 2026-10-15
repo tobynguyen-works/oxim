@@ -1,0 +1,39 @@
+core:changelogs:
+  - content: "---\npackages:\n  group:oxim:\n    type: patch\n---\n\n## Update deps\n"
+    filename: 2026-10-15-mv96r3wo.md
+    v: 0.0.0
+core:packages:
+  - id: npm:@oxim/monorepo
+    updated: false
+  - id: npm:@oxim/docs
+    updated: false
+  - changelogIds:
+      - 2026-10-15-mv96r3wo.md
+    id: npm:@oxim/vite
+    updated: true
+  - changelogIds:
+      - 2026-10-15-mv96r3wo.md
+    id: npm:@oxim/core
+    updated: true
+  - changelogIds:
+      - 2026-10-15-mv96r3wo.md
+    id: npm:@oxim/storage
+    updated: true
+  - changelogIds:
+      - 2026-10-15-mv96r3wo.md
+    id: npm:@oxim/utils
+    updated: true
+  - id: npm:@playground/vite
+    updated: true
+npm:packages:
+  - id: npm:@oxim/monorepo
+  - id: npm:@oxim/docs
+  - distTag: rc
+    id: npm:@oxim/vite
+  - distTag: rc
+    id: npm:@oxim/core
+  - distTag: rc
+    id: npm:@oxim/storage
+  - distTag: rc
+    id: npm:@oxim/utils
+  - id: npm:@playground/vite
