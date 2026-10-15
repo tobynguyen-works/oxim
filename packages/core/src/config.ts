@@ -41,16 +41,21 @@ export type Config = {
 export const defaultConfig: Config = {
   concurrency: 'unbounded',
   png: {
-    method: 'lossless',
+    method: 'lossy',
+    maxQuality: 80,
+    minQuality: 70,
   },
   jpeg: {
-    method: 'lossless',
+    method: 'lossy',
+    quality: 80,
   },
   webp: {
-    method: 'lossless',
+    method: 'lossy',
+    quality: 80,
   },
   avif: {
-    method: 'lossless',
+    method: 'lossy',
+    quality: 80,
   },
 }
 
