@@ -1,0 +1,29 @@
+{
+  "name": "@oxim/monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ready": "vp check && vp run -r test && vp run -r build",
+    "prepare": "vp config && effect-tsgo patch --no-typescript --oxlint",
+    "tegami": "jiti scripts/tegami.ts"
+  },
+  "devDependencies": {
+    "@effect/tsgo": "catalog:",
+    "@total-typescript/tsconfig": "catalog:",
+    "jiti": "catalog:",
+    "tegami": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.10.1",
+      "onFail": "download"
+    }
+  },
+  "engines": {
+    "node": ">=22.23.3"
+  }
+}

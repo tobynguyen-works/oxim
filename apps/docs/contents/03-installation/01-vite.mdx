@@ -1,0 +1,33 @@
+---
+title: Vite
+description: Install Oxim, import it to your web bundlers
+---
+
+```package-install
+@oxim/vite
+```
+
+Then, declare it in your `vite.config.ts`
+
+```ts vite.config.ts
+import { defineConfig } from 'vite'
+import Oxim from '@oxim/vite'
+
+export default defineConfig({
+  plugins: [
+    Oxim({
+      png: {
+        method: 'lossy',
+        maxQuality: 50,
+        minQuality: 30,
+      },
+      jpeg: {
+        method: 'lossy',
+        quality: 50,
+      },
+    }),
+  ],
+})
+```
+
+That's it, now you can run `vite build` to see the magic. ✨

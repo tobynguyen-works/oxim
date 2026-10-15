@@ -1,0 +1,31 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: voidzero-dev/setup-vp@49c3e4e92c52e7f8392712a9267bbe71c5ab30e5 # v1.19.0
+        with:
+          node-version: lts/*
+          cache: false
+
+      - run: vp install
+      - run: vpr build
+
+      - name: Version & publish packages
+        run: vpr tegami ci
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

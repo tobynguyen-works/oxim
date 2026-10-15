@@ -1,0 +1,37 @@
+packages:
+  - apps/*
+  - packages/*
+  - playgrounds/*
+
+catalogMode: prefer
+
+catalog:
+  '@effect/platform-node': ^4.0.2
+  '@effect/tsgo': ^0.51.1
+  '@effect/vitest': ^4.0.2
+  '@napi-rs/image': ^1.15.0
+  '@node-rs/xxhash': ^1.7.8
+  '@total-typescript/tsconfig': ^1.0.4
+  '@types/node': ^22
+  blume: ^2.2.2
+  effect: ^4.0.2
+  image-meta: ^0.3.0
+  jiti: ^2.7.0
+  picocolors: ^1.1.1
+  pretty-bytes: ^7.2.0
+  tegami: ^1.5.0
+  typescript: ^7.0.2
+  unstorage: ^1.17.5
+  vite: npm:@voidzero-dev/vite-plus-core@1.1.0
+  vite-plus: 1.1.0
+  vitest: ^5.0.3
+
+overrides:
+  vite@*: 'catalog:'
+  vitest: 'catalog:'
+
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: '*'
