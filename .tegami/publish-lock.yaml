@@ -1,27 +1,21 @@
 core:changelogs:
-  - content: "---\npackages:\n  group:oxim:\n    type: patch\n---\n\n## Update deps\n"
-    filename: 2026-10-15-mv96r3wo.md
+  - content: "---\npackages:\n  npm:@oxim/core:\n    type: patch\n---\n\n## Update default config\n\n- Set all compressing options to using lossy method\n"
+    filename: 2026-10-15-mv9n9mha.md
     v: 0.0.0
 core:packages:
   - id: npm:@oxim/monorepo
     updated: false
   - id: npm:@oxim/docs
     updated: false
-  - changelogIds:
-      - 2026-10-15-mv96r3wo.md
-    id: npm:@oxim/vite
+  - id: npm:@oxim/vite
     updated: true
   - changelogIds:
-      - 2026-10-15-mv96r3wo.md
+      - 2026-10-15-mv9n9mha.md
     id: npm:@oxim/core
     updated: true
-  - changelogIds:
-      - 2026-10-15-mv96r3wo.md
-    id: npm:@oxim/storage
+  - id: npm:@oxim/storage
     updated: true
-  - changelogIds:
-      - 2026-10-15-mv96r3wo.md
-    id: npm:@oxim/utils
+  - id: npm:@oxim/utils
     updated: true
   - id: npm:@playground/vite
     updated: true
