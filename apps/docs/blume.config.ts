@@ -96,5 +96,5 @@ export default defineConfig({
 
   analytics: [vercel()],
 
-  deployment: VercelAdapter(),
+  deployment: VercelAdapter({ site: 'https://oxim.tobynguyen.net' }),
 })
