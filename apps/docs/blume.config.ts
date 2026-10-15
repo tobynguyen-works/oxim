@@ -1,5 +1,9 @@
 import { defineConfig } from 'blume'
+import { gateway } from 'blume/ai'
 import { vercel } from 'blume/analytics'
+import { hcaptcha } from 'blume/captcha'
+import { vercel as VercelAdapter } from 'blume/deploy'
+import { upstash } from 'blume/ratelimit'
 
 export default defineConfig({
   title: 'Oxim',
@@ -52,7 +56,37 @@ export default defineConfig({
   seo: {
     robots: true,
     sitemap: true,
+    og: {
+      enabled: true,
+    },
+    structuredData: true,
+    software: {
+      license: 'MIT',
+      price: 0,
+      sameAs: ['https://github.com/tobynguyen-works/oxim'],
+    },
   },
+
+  agents: {
+    llmsTxt: true,
+    mcp: { enabled: true },
+    agentReadability: true,
+  },
+
+  ai: {
+    assistant: {
+      enabled: true,
+      suggestions: [
+        { label: 'What is Oxim?', icon: 'rocket' },
+        { label: 'How to install and setup Oxim?', icon: 'download' },
+      ],
+      provider: gateway({ model: 'alibaba/qwen3.8-omni-flash', reasoning: 'minimal' }),
+      captcha: hcaptcha({ siteKey: '0cd894da-a096-4322-aa9a-8ffa01aef3b4' }),
+    },
+    openInChat: ['chatgpt', 'claude', 'cursor', 't3', 'scira', 'v0'],
+  },
+
+  rateLimit: upstash({ urlEnv: 'KV_REST_API_URL', tokenEnv: 'KV_REST_API_TOKEN', requests: 10 }),
 
   github: {
     owner: 'tobynguyen-works',
@@ -62,7 +96,5 @@ export default defineConfig({
 
   analytics: [vercel()],
 
-  deployment: {
-    site: 'https://oxim.tobynguyen.net',
-  },
+  deployment: VercelAdapter(),
 })
