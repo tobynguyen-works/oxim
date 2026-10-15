@@ -24,11 +24,11 @@ catalog:
   unstorage: ^1.17.5
   vite: npm:@voidzero-dev/vite-plus-core@1.1.0
   vite-plus: 1.1.0
-  vitest: ^5.0.4
+  vitest: 5.0.3
 
 overrides:
   vite@*: 'catalog:'
-  vitest: 'catalog:'
+  vitest@*: 'catalog:'
 
 peerDependencyRules:
   allowAny:
