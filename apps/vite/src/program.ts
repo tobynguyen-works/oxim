@@ -1,5 +1,5 @@
 import { StorageService } from '@oxim/storage'
-import { formatBytes, xxhash64 } from '@oxim/utils'
+import { formatBytes, hash } from '@oxim/utils'
 import { Duration, Effect, Path, pipe, Ref } from 'effect'
 import type { OutputBundle } from 'vite/rolldown'
 import { compress } from './compressor'
@@ -35,10 +35,7 @@ export const program = (bundles: OutputBundle) =>
           let runningTime = Duration.zero
           const oldBufferSizeBytes = yield* formatBytes((asset.source as Uint8Array).byteLength)
 
-          const cacheKey = yield* pipe(
-            xxhash64(asset.source),
-            Effect.map((it) => it.toString(16)),
-          )
+          const cacheKey = hash(asset.source)
           yield* Ref.update(cacheKeysRef, (it) => [...it, cacheKey])
 
           const cacheValue = yield* storage.getItem(cacheKey)

@@ -29,6 +29,7 @@
   "dependencies": {
     "@node-rs/xxhash": "catalog:",
     "image-meta": "catalog:",
+    "ohash": "catalog:",
     "pretty-bytes": "catalog:"
   },
   "devDependencies": {

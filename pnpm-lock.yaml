@@ -197,6 +197,9 @@ catalogs:
     jiti:
       specifier: ^2.7.0
       version: 2.7.0
+    ohash:
+      specifier: ^2.0.12
+      version: 2.0.12
     picocolors:
       specifier: ^1.1.1
       version: 1.1.1
@@ -345,6 +348,9 @@ importers:
       image-meta:
         specifier: 'catalog:'
         version: 0.3.0
+      ohash:
+        specifier: 'catalog:'
+        version: 2.0.12
       pretty-bytes:
         specifier: 'catalog:'
         version: 7.2.0

@@ -1,8 +1,11 @@
-import { Effect } from 'effect'
-import { xxh32, xxh64 } from '@node-rs/xxhash'
+import { pipe } from 'effect'
+import { xxh64 } from '@node-rs/xxhash'
+import { serialize } from 'ohash'
 
-export const xxhash32 = (input: Uint8Array | string, seed?: number) =>
-  Effect.sync(() => xxh32(input, seed))
-
-export const xxhash64 = (input: Uint8Array | string, seed?: bigint) =>
-  Effect.sync(() => xxh64(input, seed))
+export const hash = (input: any, seed?: bigint) =>
+  pipe(
+    input,
+    serialize,
+    () => xxh64(input, seed),
+    (it) => it.toString(16),
+  )
