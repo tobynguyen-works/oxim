@@ -2,19 +2,7 @@ import { defineConfig } from 'vite-plus'
 import Oxim from '@oxim/vite'
 
 export default defineConfig({
-  plugins: [
-    Oxim({
-      png: {
-        method: 'lossy',
-        maxQuality: 50,
-        minQuality: 30,
-      },
-      jpeg: {
-        method: 'lossy',
-        quality: 50,
-      },
-    }),
-  ],
+  plugins: [Oxim()],
   run: {
     tasks: {
       build: {

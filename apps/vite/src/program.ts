@@ -1,6 +1,6 @@
 import { StorageService } from '@oxim/storage'
 import { formatBytes, hash } from '@oxim/utils'
-import { Duration, Effect, Path, pipe, Ref } from 'effect'
+import { Duration, Effect, Path, pipe, Ref, Result } from 'effect'
 import type { OutputBundle } from 'vite/rolldown'
 import { compress } from './compressor'
 import { getCompressorFromFileName } from './utils'
@@ -8,7 +8,9 @@ import { SUPPORTED_FORMATS } from './constants'
 import { timed } from 'effect/Effect'
 import { Logger } from './services/logger'
 import { garbageCollector } from './gc'
-import { ConfigService } from '@oxim/core'
+import { CacheSchema, ConfigService, type Cache } from '@oxim/core'
+import { decodeUnknownResult } from 'effect/Schema'
+import pkg from '../package.json'
 
 export const program = (bundles: OutputBundle) =>
   Effect.gen(function* () {
@@ -38,13 +40,23 @@ export const program = (bundles: OutputBundle) =>
           const cacheKey = hash(asset.source)
           yield* Ref.update(cacheKeysRef, (it) => [...it, cacheKey])
 
-          const cacheValue = yield* storage.getItem(cacheKey)
+          const cacheRaw = yield* storage.getItem(cacheKey)
+          const cache = decodeUnknownResult(CacheSchema)(cacheRaw)
 
           let buffer: Buffer<ArrayBufferLike>
 
-          if (cacheValue) {
-            buffer = Buffer.from(cacheValue, 'base64')
+          if (
+            cacheRaw &&
+            Result.isSuccess(cache) &&
+            cache.success.configHash === hash(JSON.stringify(config)) &&
+            cache.success.version === pkg.version
+          ) {
+            buffer = Buffer.from(cache.success.bufferHash, 'base64')
           } else {
+            if (cacheRaw && Result.isFailure(cache)) {
+              yield* storage.removeItem(cacheKey)
+            }
+
             const compressor = yield* getCompressorFromFileName(asset.fileName)
             const [duration, newBuffer] = yield* timed(
               compress(asset.source as Uint8Array, compressor),
@@ -52,7 +64,13 @@ export const program = (bundles: OutputBundle) =>
             buffer = newBuffer
             runningTime = duration
 
-            yield* storage.setItem(cacheKey, buffer.toString('base64'))
+            const newCache: Cache = {
+              version: pkg.version,
+              configHash: hash(JSON.stringify(config)),
+              bufferHash: buffer.toString('base64'),
+            }
+
+            yield* storage.setItem(cacheKey, JSON.stringify(newCache))
           }
 
           asset.source = buffer
