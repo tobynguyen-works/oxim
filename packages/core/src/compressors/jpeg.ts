@@ -6,7 +6,7 @@ export type JpegLossyCompressorOptions = {
   quality?: number
 }
 
-const jpegCompressor = (buffer: Uint8Array<ArrayBufferLike>, quality?: number) =>
+const jpegCompressor = (buffer: Uint8Array<ArrayBufferLike>, quality: number = 80) =>
   tryPromise({
     try: () => compressJpeg(buffer, { quality }),
     catch: (unknown) =>
