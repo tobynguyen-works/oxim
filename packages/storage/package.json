@@ -1,6 +1,6 @@
 {
   "name": "@oxim/storage",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "private": false,
   "description": "A storage library for Oxim.",
   "homepage": "https://github.com/tobynguyen-works/oxim#readme",
