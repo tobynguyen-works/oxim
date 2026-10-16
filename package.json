@@ -6,12 +6,14 @@
   "scripts": {
     "ready": "vp check && vp run -r test && vp run -r build",
     "prepare": "vp config && effect-tsgo patch --no-typescript --oxlint",
-    "tegami": "jiti scripts/tegami.ts"
+    "tegami": "jiti scripts/tegami.ts",
+    "up": "taze"
   },
   "devDependencies": {
     "@effect/tsgo": "catalog:",
     "@total-typescript/tsconfig": "catalog:",
     "jiti": "catalog:",
+    "taze": "catalog:",
     "tegami": "catalog:",
     "typescript": "catalog:",
     "vite-plus": "catalog:"

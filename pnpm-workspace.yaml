@@ -27,6 +27,7 @@ catalog:
   unstorage: ^1.17.6
   '@astrojs/vercel': 11.0.14
   ohash: ^2.0.12
+  taze: ^21.3.0
 
 overrides:
   vite@*: 'catalog:'
