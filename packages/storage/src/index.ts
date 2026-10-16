@@ -5,6 +5,8 @@ import fsLite from 'unstorage/drivers/fs-lite'
 import { promise, tryPromise } from 'effect/Effect'
 import { StorageError } from './error'
 
+export * from './error'
+
 export class StorageService extends Context.Service<
   StorageService,
   {
