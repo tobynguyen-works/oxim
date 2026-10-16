@@ -1,21 +1,27 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@oxim/core:\n    type: patch\n---\n\n## Update default config\n\n- Set all compressing options to using lossy method\n"
-    filename: 2026-10-15-mv9n9mha.md
+  - content: "---\npackages:\n  group:oxim:\n    type: patch\n---\n\n### Fix Oxim cache invalidation\n\nAutomatically regenerates the cache when outdated due to a version update or configuration change.\n"
+    filename: 2026-10-16-mvafzdvc.md
     v: 0.0.0
 core:packages:
   - id: npm:@oxim/monorepo
     updated: false
   - id: npm:@oxim/docs
     updated: false
-  - id: npm:@oxim/vite
+  - changelogIds:
+      - 2026-10-16-mvafzdvc.md
+    id: npm:@oxim/vite
     updated: true
   - changelogIds:
-      - 2026-10-15-mv9n9mha.md
+      - 2026-10-16-mvafzdvc.md
+    id: npm:@oxim/storage
+    updated: true
+  - changelogIds:
+      - 2026-10-16-mvafzdvc.md
     id: npm:@oxim/core
     updated: true
-  - id: npm:@oxim/storage
-    updated: true
-  - id: npm:@oxim/utils
+  - changelogIds:
+      - 2026-10-16-mvafzdvc.md
+    id: npm:@oxim/utils
     updated: true
   - id: npm:@playground/vite
     updated: true
@@ -25,9 +31,9 @@ npm:packages:
   - distTag: rc
     id: npm:@oxim/vite
   - distTag: rc
-    id: npm:@oxim/core
-  - distTag: rc
     id: npm:@oxim/storage
+  - distTag: rc
+    id: npm:@oxim/core
   - distTag: rc
     id: npm:@oxim/utils
   - id: npm:@playground/vite
