@@ -1,6 +1,6 @@
 import { StorageService } from '@oxim/storage'
 import { formatBytes, hash } from '@oxim/utils'
-import { Duration, Effect, Path, pipe, Ref, Result } from 'effect'
+import { Array, Duration, Effect, Option, Path, pipe, Ref } from 'effect'
 import type { OutputBundle } from 'vite/rolldown'
 import { compress } from './compressor'
 import { getCompressorFromFileName } from './utils'
@@ -9,7 +9,7 @@ import { timed } from 'effect/Effect'
 import { Logger } from './services/logger'
 import { garbageCollector } from './gc'
 import { CacheSchema, ConfigService, type Cache } from '@oxim/core'
-import { decodeUnknownResult } from 'effect/Schema'
+import { decodeUnknownOption } from 'effect/Schema'
 import pkg from '../package.json'
 
 export const program = (bundles: OutputBundle) =>
@@ -20,42 +20,41 @@ export const program = (bundles: OutputBundle) =>
     const logger = yield* Logger
 
     const assets = pipe(
-      bundles,
-      (it) => Object.values(it),
-      (chunks) => chunks.filter((it) => it.type === 'asset'),
-      (chunks) => chunks.filter((it) => SUPPORTED_FORMATS.has(path.extname(it.fileName).slice(1))),
+      Object.values(bundles),
+      Array.filter((it) => it.type === 'asset'),
+      Array.filter((it) => SUPPORTED_FORMATS.has(path.extname(it.fileName).slice(1))),
     )
 
     const totalAssets = assets.length
     const counterRef = yield* Ref.make(1)
-    const cacheKeysRef = yield* Ref.make<string[]>([])
+    const cacheKeysRef = yield* Ref.make<readonly string[]>([])
+
+    const configHash = hash(JSON.stringify(config))
+    const cacheDecoder = decodeUnknownOption(CacheSchema)
 
     yield* Effect.forEach(
       assets,
       (asset) =>
         Effect.gen(function* () {
-          let runningTime = Duration.zero
           const oldBufferSizeBytes = yield* formatBytes((asset.source as Uint8Array).byteLength)
 
           const cacheKey = hash(asset.source)
-          yield* Ref.update(cacheKeysRef, (it) => [...it, cacheKey])
+          yield* Ref.update(cacheKeysRef, Array.append(cacheKey))
 
           const cacheRaw = yield* storage.getItem(cacheKey)
-          const cache = decodeUnknownResult(CacheSchema)(cacheRaw)
+          const cache = cacheDecoder(cacheRaw)
 
           let buffer: Buffer<ArrayBufferLike>
+          let runningTime = Duration.zero
 
-          if (
-            cacheRaw &&
-            Result.isSuccess(cache) &&
-            cache.success.configHash === hash(JSON.stringify(config)) &&
-            cache.success.version === pkg.version
-          ) {
-            buffer = Buffer.from(cache.success.bufferHash, 'base64')
+          const validCache = cache.pipe(
+            Option.filter((it) => it.configHash === configHash && it.version === pkg.version),
+          )
+
+          if (Option.isSome(validCache)) {
+            buffer = Buffer.from(validCache.value.bufferHash, 'base64')
           } else {
-            if (cacheRaw && Result.isFailure(cache)) {
-              yield* storage.removeItem(cacheKey)
-            }
+            yield* storage.removeItem(cacheKey)
 
             const compressor = yield* getCompressorFromFileName(asset.fileName)
             const [duration, newBuffer] = yield* timed(
@@ -66,7 +65,7 @@ export const program = (bundles: OutputBundle) =>
 
             const newCache: Cache = {
               version: pkg.version,
-              configHash: hash(JSON.stringify(config)),
+              configHash,
               bufferHash: buffer.toString('base64'),
             }
 
@@ -78,13 +77,10 @@ export const program = (bundles: OutputBundle) =>
           const currentIndex = yield* Ref.getAndUpdate(counterRef, (it) => it + 1)
           const resolveTimeMs = pipe(Duration.toMillis(runningTime), Math.round)
 
-          let message: string
-          if (resolveTimeMs === 0) {
-            message = '(reused cache entry)'
-          } else {
-            const newBufferSizeBytes = yield* formatBytes(buffer.byteLength)
-            message = `(before: ${oldBufferSizeBytes}) (after: ${newBufferSizeBytes})`
-          }
+          const message =
+            resolveTimeMs === 0
+              ? '(reused cache entry)'
+              : `(before: ${oldBufferSizeBytes}) (after: ${yield* formatBytes(buffer.byteLength)})`
 
           logger.info(
             `${asset.fileName} ${message} (${resolveTimeMs}ms) (${currentIndex}/${totalAssets})`,
