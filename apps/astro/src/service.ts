@@ -119,3 +119,5 @@ export const OximImageService: LocalImageService<OximImageServiceConfig> = {
     }
   },
 }
+
+export default OximImageService
