@@ -1,0 +1,54 @@
+{
+  "name": "@oxim/astro",
+  "version": "1.0.0-rc.4",
+  "private": false,
+  "description": "An Astro integration for optimizing images.",
+  "keywords": [
+    "astro",
+    "image"
+  ],
+  "homepage": "https://github.com/tobynguyen-works/oxim#readme",
+  "bugs": {
+    "url": "https://github.com/tobynguyen-works/oxim/issues"
+  },
+  "license": "MIT",
+  "author": "Toby Nguyen <hi@tobynguyen.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobynguyen-works/oxim.git",
+    "directory": "apps/astro"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./service": "./dist/service.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "vp run build"
+  },
+  "dependencies": {
+    "@effect/platform-node": "catalog:",
+    "@napi-rs/image": "catalog:",
+    "@oxim/core": "workspace:*",
+    "@oxim/storage": "workspace:*",
+    "@oxim/utils": "workspace:*",
+    "effect": "catalog:",
+    "picocolors": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "peerDependencies": {
+    "astro": "catalog:"
+  }
+}
