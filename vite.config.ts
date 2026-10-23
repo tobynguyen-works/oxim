@@ -25,6 +25,9 @@ export default defineConfig({
       vite: {
         command: 'vp run @playground/vite#build',
       },
+      astro: {
+        command: 'vp run @playground/astro#build',
+      },
       build: {
         command: 'vp run --filter "@oxim/*" --filter "!@oxim/docs" build',
       },

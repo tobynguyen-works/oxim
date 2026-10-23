@@ -1,0 +1,28 @@
+---
+import { Image } from 'astro:assets';
+import img0 from '../assets/img_0.png';
+import img1 from '../assets/img_1.jpg';
+import img2 from '../assets/img_2.png';
+import img3 from '../assets/img_3.avif';
+import img4 from '../assets/img_4.webp';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<div>
+  <Image src={img0} alt="Image 0 description" />
+  <Image src={img1} alt="Image 1 description" />
+  <Image src={img2} alt="Image 2 description" />
+  <Image src={img3} alt="Image 3 description" />
+  <Image src={img4} alt="Image 4 description" />
+</div>
+	</body>
+</html>
