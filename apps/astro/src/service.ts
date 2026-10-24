@@ -126,7 +126,7 @@ export const OximImageService: LocalImageService<OximImageServiceConfig> = {
       case 'avif':
         quality = parseQualityProp(transform.quality, config.service.config.avif?.quality)
         buffer = await tx.avif(
-          quality
+          quality != null
             ? { ...config.service.config.avif, quality: quality }
             : config.service.config.avif,
         )

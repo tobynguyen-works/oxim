@@ -4,7 +4,7 @@ export const parseQualityProp = (
   input: string | null | undefined,
   fallback: number = DEFAULT_QUALITY,
 ) => {
-  if (input == null || input.trim() === '') return fallback
+  if (input == null || input === '') return fallback
 
   const n = Number(input)
 
