@@ -6,6 +6,7 @@ import { FastResizeFilter, ResizeFit, Transformer } from '@napi-rs/image'
 import { Effect } from 'effect'
 import { getFileTypeFromBuffer } from '@oxim/utils'
 import { DEFAULT_OUTPUT_FORMAT } from './consts'
+import { parseQualityProp } from './utils'
 
 export const OximImageService: LocalImageService<OximImageServiceConfig> = {
   ...baseService,
@@ -115,14 +116,15 @@ export const OximImageService: LocalImageService<OximImageServiceConfig> = {
       })
     }
 
-    const quality = transform.quality == null ? transform.quality : Number(transform.quality)
     let buffer
+    let quality
 
     switch (outputFormat) {
       case 'png':
         buffer = await tx.png(config.service.config.png)
         break
       case 'avif':
+        quality = parseQualityProp(transform.quality, config.service.config.avif?.quality)
         buffer = await tx.avif(
           quality
             ? { ...config.service.config.avif, quality: quality }
@@ -131,10 +133,12 @@ export const OximImageService: LocalImageService<OximImageServiceConfig> = {
         break
       case 'jpeg':
       case 'jpg':
-        buffer = await tx.jpeg(quality ?? config.service.config.jpeg?.quality)
+        quality = parseQualityProp(transform.quality, config.service.config.jpeg?.quality)
+        buffer = await tx.jpeg(quality)
         break
       case 'webp':
-        buffer = await tx.webp(quality ?? config.service.config.webp?.quality)
+        quality = parseQualityProp(transform.quality, config.service.config.webp?.quality)
+        buffer = await tx.webp(quality)
         break
       case 'tiff':
       case 'tif':
