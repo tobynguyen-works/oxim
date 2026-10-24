@@ -1,39 +1,33 @@
-core:changelogs:
-  - content: "---\npackages:\n  group:oxim:\n    type: patch\n---\n\n### Fix Oxim cache invalidation\n\nAutomatically regenerates the cache when outdated due to a version update or configuration change.\n"
-    filename: 2026-10-16-mvafzdvc.md
-    v: 0.0.0
 core:packages:
   - id: npm:@oxim/monorepo
     updated: false
+  - id: npm:@oxim/astro
+    updated: true
   - id: npm:@oxim/docs
     updated: false
-  - changelogIds:
-      - 2026-10-16-mvafzdvc.md
-    id: npm:@oxim/vite
-    updated: true
-  - changelogIds:
-      - 2026-10-16-mvafzdvc.md
-    id: npm:@oxim/storage
-    updated: true
-  - changelogIds:
-      - 2026-10-16-mvafzdvc.md
-    id: npm:@oxim/core
-    updated: true
-  - changelogIds:
-      - 2026-10-16-mvafzdvc.md
-    id: npm:@oxim/utils
+  - id: npm:@oxim/vite
+    updated: false
+  - id: npm:@oxim/core
+    updated: false
+  - id: npm:@oxim/storage
+    updated: false
+  - id: npm:@oxim/utils
+    updated: false
+  - id: npm:@playground/astro
     updated: true
   - id: npm:@playground/vite
-    updated: true
+    updated: false
 npm:packages:
   - id: npm:@oxim/monorepo
+  - id: npm:@oxim/astro
+  - id: npm:@playground/astro
   - id: npm:@oxim/docs
   - distTag: rc
     id: npm:@oxim/vite
   - distTag: rc
-    id: npm:@oxim/storage
-  - distTag: rc
     id: npm:@oxim/core
+  - distTag: rc
+    id: npm:@oxim/storage
   - distTag: rc
     id: npm:@oxim/utils
   - id: npm:@playground/vite

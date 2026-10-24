@@ -1,6 +1,6 @@
 {
   "name": "@oxim/astro",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0",
   "private": false,
   "description": "An Astro integration for optimizing images.",
   "keywords": [
