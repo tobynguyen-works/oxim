@@ -9,7 +9,7 @@ export const parseQualityProp = (
   const n = Number(input)
 
   if (Number.isFinite(n)) {
-    return n
+    return Math.min(100, Math.max(0, n))
   } else {
     switch (input) {
       case 'low':
