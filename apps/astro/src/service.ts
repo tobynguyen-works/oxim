@@ -4,39 +4,61 @@ import type { BaseServiceTransform, OximImageServiceConfig } from './types'
 import { AstroError, AstroErrorData } from 'astro/errors'
 import { FastResizeFilter, ResizeFit, Transformer } from '@napi-rs/image'
 import { Effect } from 'effect'
-import { getImageMeta } from '@oxim/utils'
+import { getFileTypeFromBuffer } from '@oxim/utils'
+import { DEFAULT_OUTPUT_FORMAT } from './consts'
 
 export const OximImageService: LocalImageService<OximImageServiceConfig> = {
   ...baseService,
   async transform(inputBuffer, transformOptions, config, logger) {
     const transform = transformOptions as BaseServiceTransform
 
-    const imageMeta = Effect.runSync(
-      Effect.match(getImageMeta(inputBuffer), {
+    const imageMeta = await Effect.runPromise(
+      Effect.match(getFileTypeFromBuffer(inputBuffer), {
         onSuccess: (it) => it,
         onFailure: () => null,
       }),
     )
 
-    // FIXME: imageMeta also fails if the SVG has percentage size
+    // What if an svg has percentage size?
     if (!imageMeta) {
       throw new AstroError(AstroErrorData.NoImageMetadata.message(transform.src))
     }
 
-    const { type: bufferFormat, ...bufferMeta } = imageMeta
-    const outputFormat = transform.format ?? (bufferFormat === 'svg' ? 'svg' : 'webp')
+    const { ext: bufferFormat } = imageMeta
+    const outputFormat =
+      transform.format ??
+      (bufferFormat === 'svg'
+        ? 'svg'
+        : bufferFormat === 'gif'
+          ? 'gif'
+          : bufferFormat === 'apng'
+            ? 'apng'
+            : DEFAULT_OUTPUT_FORMAT)
 
-    // Handle SVG here
-    if (outputFormat === 'svg') {
-      if (bufferFormat && bufferFormat !== 'svg') {
-        logger.warn(
-          `Astro expected an SVG for "${transform.src}" but the source is ${bufferFormat}. Passing it through as ${bufferFormat} instead.`,
-        )
+    // Handle unsupported output format
+    if (outputFormat === 'svg' || outputFormat === 'gif' || outputFormat === 'apng') {
+      if (bufferFormat === 'svg' && outputFormat === 'svg') {
         return { data: inputBuffer, format: bufferFormat as ImageOutputFormat }
       }
 
-      // Add an optimizer here
-      return { data: inputBuffer, format: 'svg' }
+      if (bufferFormat === 'gif' && outputFormat === 'gif') {
+        return { data: inputBuffer, format: bufferFormat as ImageOutputFormat }
+      }
+
+      if (bufferFormat === 'apng' && outputFormat === 'apng') {
+        return { data: inputBuffer, format: bufferFormat as ImageOutputFormat }
+      }
+
+      logger.warn(
+        `Astro expected an ${outputFormat.toUpperCase()} for "${transform.src}" but the source is ${bufferFormat}. Passing it through as ${bufferFormat} instead.`,
+      )
+      return { data: inputBuffer, format: bufferFormat as ImageOutputFormat }
+    }
+
+    // Handle unsupported input format
+    if (bufferFormat === 'gif' || bufferFormat === 'apng') {
+      logger.warn(`We does not support processing ${bufferFormat.toUpperCase()}`)
+      return { data: inputBuffer, format: bufferFormat as ImageOutputFormat }
     }
 
     // non-SVG here
@@ -78,7 +100,8 @@ export const OximImageService: LocalImageService<OximImageServiceConfig> = {
         filter: FastResizeFilter.Lanczos3,
       })
     } else if (transform.height && !transform.width) {
-      const width = Math.round(transform.height * (bufferMeta.width / bufferMeta.height))
+      const { width: w, height: h } = await tx.metadata()
+      const width = Math.round(transform.height * (w / h))
 
       tx.fastResize({
         width,
@@ -92,6 +115,7 @@ export const OximImageService: LocalImageService<OximImageServiceConfig> = {
       })
     }
 
+    const quality = transform.quality == null ? transform.quality : Number(transform.quality)
     let buffer
 
     switch (outputFormat) {
@@ -99,14 +123,22 @@ export const OximImageService: LocalImageService<OximImageServiceConfig> = {
         buffer = await tx.png(config.service.config.png)
         break
       case 'avif':
-        buffer = await tx.avif(config.service.config.avif)
+        buffer = await tx.avif(
+          quality
+            ? { ...config.service.config.avif, quality: quality }
+            : config.service.config.avif,
+        )
         break
       case 'jpeg':
       case 'jpg':
-        buffer = await tx.jpeg(config.service.config.jpeg?.quality)
+        buffer = await tx.jpeg(quality ?? config.service.config.jpeg?.quality)
         break
       case 'webp':
-        buffer = await tx.webp(config.service.config.webp?.quality)
+        buffer = await tx.webp(quality ?? config.service.config.webp?.quality)
+        break
+      case 'tiff':
+      case 'tif':
+        buffer = await tx.tiff()
         break
       default:
         buffer = inputBuffer
