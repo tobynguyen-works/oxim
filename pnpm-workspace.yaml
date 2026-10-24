@@ -28,6 +28,9 @@ catalog:
   ohash: ^2.0.12
   taze: ^21.3.0
   astro: ^7.4.2
+  svgo: ^4.1.0
+  file-type: ^22.2.0
+  '@file-type/xml': ^1.2.0
 
 overrides:
   vite@*: 'catalog:'

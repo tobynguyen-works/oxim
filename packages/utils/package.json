@@ -27,7 +27,9 @@
     "test": "vp test"
   },
   "dependencies": {
+    "@file-type/xml": "catalog:",
     "@node-rs/xxhash": "catalog:",
+    "file-type": "catalog:",
     "image-meta": "catalog:",
     "ohash": "catalog:",
     "pretty-bytes": "catalog:"
